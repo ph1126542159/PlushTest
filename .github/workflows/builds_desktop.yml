@@ -1,0 +1,119 @@
+#-------------------------------------------------------------------------------
+# Workflow configuration
+#-------------------------------------------------------------------------------
+
+name: "Desktop CI builds"
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+#-------------------------------------------------------------------------------
+# Define application name & version
+#-------------------------------------------------------------------------------
+
+env:
+  APP_NAME: "PlushTest"
+  APP_VERSION: "5.4"
+  QT_VERSION: "6.6.0"
+
+#-------------------------------------------------------------------------------
+# Workflow jobs
+#-------------------------------------------------------------------------------
+
+jobs:
+  ## Windows build #############################################################
+  build-windows:
+    name: "Windows CI build"
+    runs-on: windows-2022
+    steps:
+      # Checkout the repository (and submodules)
+      - name: Checkout repository (and submodules)
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      # Configure MSVC
+      - name: Configure MSVC
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x64
+          spectre: true
+
+      # Install Qt
+      - name: Install Qt
+        uses: jurplel/install-qt-action@v3
+        with:
+          version: ${{env.QT_VERSION}}
+          modules: qtconnectivity qtcharts qtshadertools qt5compat
+
+      # Install NSIS (already installed in 'windows-2022')
+      #- name: Install NSIS
+      #  run: |
+      #       Invoke-Expression (New-Object System.Net.WebClient).DownloadString('https://get.scoop.sh')
+      #       scoop bucket add extras
+      #       scoop install nsis
+
+      # Setup env
+      - name: Setup env
+        run: |
+             qmake --version
+
+      # Build application
+      - name: Build application
+        run: |
+             qmake ${{env.APP_NAME}}.pro CONFIG+=release
+             nmake
+
+      # Deploy application
+      - name: Deploy application
+        run: sh deploy_windows.sh -c -p
+
+
+      - name: Get the tag name
+        id: get_tag_name
+        run: |
+          $TAG_NAME = ($env:GITHUB_REF -split '/')[2]
+          echo "TAG_NAME=$TAG_NAME" >> $env:GITHUB_ENV
+          echo "::set-output name=tag_name::$TAG_NAME"
+        shell: pwsh 
+
+      # 创建 Release
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        with:
+          tag_name: ${{ steps.get_tag_name.outputs.tag_name }}  # 使用输出变量
+          release_name: Release ${{ steps.get_tag_name.outputs.tag_name }}
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.MYTOKEN }} 
+
+      - name: Check GITHUB_TOKEN
+        run: |
+          if [ -z "${{ secrets.MYTOKEN }}" ]; then
+          echo "GITHUB_TOKEN is not set ${{ secrets.MYTOKEN }}"
+          else
+            echo "GITHUB_TOKEN is set"
+          fi
+
+      # 上传 Release 资产
+
+     # 上传 ZIP 文件到 Release
+      - name: Upload app ZIP
+        uses: actions/upload-release-asset@v1
+        with:
+         upload_url: ${{ steps.create_release.outputs.upload_url }}
+         asset_path: ${{env.APP_NAME}}-${{env.APP_VERSION}}-win64.zip
+         asset_name: ${{env.APP_NAME}}-${{env.APP_VERSION}}-win64.zip
+         asset_content_type: application/zip
+
+     # 上传 NSIS installer 到 Release
+      - name: Upload NSIS installer
+        uses: actions/upload-release-asset@v1
+        with:
+         upload_url: ${{ steps.create_release.outputs.upload_url }}
+         asset_path: ${{env.APP_NAME}}-${{env.APP_VERSION}}-win64.exe
+         asset_name: ${{env.APP_NAME}}-${{env.APP_VERSION}}-win64.exe
+         asset_content_type: application/octet-stream
