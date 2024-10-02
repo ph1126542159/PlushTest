@@ -42,14 +42,14 @@ esac
 shift # skip argument or value
 done
 
+mkdir bin
+mv build/Release/$APP_NAME.exe bin/
+
 ## APP INSTALL #################################################################
 
 if [[ $make_install = true ]] ; then
   echo '---- Running make install'
   make INSTALL_ROOT=bin/ install
-
-  #echo '---- Installation directory content recap (after make install):'
-  #find bin/
 fi
 
 ## DEPLOY ######################################################################
@@ -57,10 +57,6 @@ fi
 echo '---- Running windeployqt'
 windeployqt bin/ --qmldir qml/
 
-#echo '---- Installation directory content recap (after windeployqt):'
-#find bin/
-
-mv bin $APP_NAME
 
 ## PACKAGE (zip) ###############################################################
 
