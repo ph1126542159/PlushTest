@@ -106,3 +106,5 @@ jobs:
          asset_path: ${{env.APP_NAME}}-${{env.APP_VERSION}}-win64.exe
          asset_name: ${{env.APP_NAME}}-${{env.APP_VERSION}}-win64.exe
          asset_content_type: application/octet-stream
+        env:
+          GITHUB_TOKEN: ${{ secrets.MYTOKEN }} 
