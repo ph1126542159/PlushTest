@@ -50,6 +50,9 @@ if [[ $make_install = true ]] ; then
   make INSTALL_ROOT=bin/ install
 fi
 
+
+mkdir bin
+mv build/$APP_NAME.exe bin/
 ## DEPLOY ######################################################################
 
 echo '---- Running windeployqt'
