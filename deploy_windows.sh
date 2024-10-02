@@ -42,8 +42,6 @@ esac
 shift # skip argument or value
 done
 
-mkdir bin
-mv $APP_NAME.exe bin/
 
 ## APP INSTALL #################################################################
 
