@@ -58,7 +58,7 @@ jobs:
         run: |
            mkdir build
            cd build/
-           cmake .. -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release -j 8
+           cmake .. -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release -j8
            nmake
 
       # Deploy application
