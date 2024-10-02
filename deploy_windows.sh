@@ -43,7 +43,7 @@ shift # skip argument or value
 done
 
 mkdir bin
-mv build/Release/$APP_NAME.exe bin/
+mv $APP_NAME.exe bin/
 
 ## APP INSTALL #################################################################
 
