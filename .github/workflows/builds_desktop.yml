@@ -71,8 +71,6 @@ jobs:
         id: get_tag_name
         run: |
           $TAG_NAME = ($env:GITHUB_REF -split '/')[2]
-          echo "TAG_NAME=$TAG_NAME" >> $env:GITHUB_ENV
-          echo "::set-output name=tag_name::$TAG_NAME"
         shell: pwsh 
 
       # 创建 Release
