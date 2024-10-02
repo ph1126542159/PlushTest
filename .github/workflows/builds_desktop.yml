@@ -56,8 +56,9 @@ jobs:
     # Build application
       - name: Build application
         run: |
+           mkdir build
            cd build/
-           cmake .. -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release
+           cmake .. -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release -j 8
            nmake
 
       # Deploy application
@@ -84,8 +85,6 @@ jobs:
           prerelease: false
         env:
           GITHUB_TOKEN: ${{ secrets.MYTOKEN }} 
-
-      # 上传 Release 资产
 
      # 上传 ZIP 文件到 Release
       - name: Upload app ZIP
