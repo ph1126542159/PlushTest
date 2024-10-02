@@ -47,23 +47,19 @@ jobs:
           version: ${{env.QT_VERSION}}
           modules: qtconnectivity qtcharts qtshadertools qt5compat
 
-      # Install NSIS (already installed in 'windows-2022')
-      #- name: Install NSIS
-      #  run: |
-      #       Invoke-Expression (New-Object System.Net.WebClient).DownloadString('https://get.scoop.sh')
-      #       scoop bucket add extras
-      #       scoop install nsis
-
       # Setup env
       - name: Setup env
         run: |
-             qmake --version
+             cmake --version
+      - name: Create build directory
+        run: mkdir build
 
       # Build application
       - name: Build application
         run: |
-             qmake ${{env.APP_NAME}}.pro CONFIG+=release
-             nmake
+             cd build/
+             cmake .. -G "Visual Studio 17 2022" -DCMAKE_BUILD_TYPE=Release
+            #  nmake
 
       # Deploy application
       - name: Deploy application
