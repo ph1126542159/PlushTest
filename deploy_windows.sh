@@ -70,7 +70,7 @@ fi
 
 if [[ $create_package = true ]] ; then
   echo '---- Creating installer'
-  mv $APP_NAME assets/windows/$APP_NAME
+  mv bin/* assets/windows/$APP_NAME/*
   makensis assets/windows/setup.nsi
   mv assets/windows/*.exe $APP_NAME-$APP_VERSION-win64.exe
 fi

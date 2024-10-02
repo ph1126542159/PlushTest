@@ -62,7 +62,6 @@ jobs:
           cd build/
           cmake .. -G "NMake Makefiles" -DCMAKE_BUILD_TYPE=Release
           nmake
-          dir
 
       # Deploy application
       - name: Deploy application
