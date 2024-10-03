@@ -63,7 +63,7 @@ windeployqt bin/ --qmldir qml/
 
 if [[ $create_package = true ]] ; then
   echo '---- Compressing package'
-  7z a $APP_NAME-$APP_VERSION-win64.zip $APP_NAME
+  7z a $APP_NAME-$APP_VERSION-win64.zip bin
 fi
 
 ## PACKAGE (NSIS) ##############################################################
