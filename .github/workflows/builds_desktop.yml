@@ -5,7 +5,8 @@
 name: "Desktop CI builds"
 on:
   push:
-  pull_request:
+    tags:
+      - "*"
   workflow_dispatch:
 
 #-------------------------------------------------------------------------------
