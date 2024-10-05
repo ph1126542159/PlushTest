@@ -79,12 +79,10 @@ jobs:
       # 创建 Release
       - name: Create Release
         id: create_release
-        uses: ncipollo/release-action@v1
+        uses: actions/create-release@v1
         with:
-          # tag_name: ${{ steps.get_tag_name.outputs.tag_name }}  # 使用输出变量
-          # release_name: Release ${{ steps.get_tag_name.outputs.tag_name }}
-          tag: ${{ github.ref }}
-          name: Release ${{ github.ref }}
+          tag_name: ${{ steps.get_tag_name.outputs.tag_name }}  # 使用输出变量
+          release_name: Release ${{ steps.get_tag_name.outputs.tag_name }}
           draft: false
           prerelease: false
         env:
